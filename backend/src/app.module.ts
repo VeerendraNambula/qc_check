@@ -18,7 +18,7 @@ import { PrismaModule } from './prisma/prisma.module';
       serveRoot: '/uploads',
     }, {
       rootPath: join(process.cwd(), '../frontend/dist'),
-      exclude: ['/api/(.*)', '/auth/(.*)', '/qc/(.*)', '/upload/(.*)', '/users/(.*)'],
+      exclude: ['/api*', '/auth*', '/qc*', '/upload*', '/users*'],
     }),
     PrismaModule,
     UsersModule,
