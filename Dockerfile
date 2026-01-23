@@ -19,17 +19,23 @@ RUN npm run build
 # Stage 3: Production
 FROM node:20-alpine
 WORKDIR /app
-COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
-COPY --from=backend-builder /app/backend/dist ./backend/dist
-COPY --from=backend-builder /app/backend/node_modules ./backend/node_modules
-COPY --from=backend-builder /app/backend/package*.json ./backend/
-COPY --from=backend-builder /app/backend/prisma ./backend/prisma
+
+# Copy Backend assets
+COPY --from=backend-builder /app/backend/dist /app/backend/dist
+COPY --from=backend-builder /app/backend/node_modules /app/backend/node_modules
+COPY --from=backend-builder /app/backend/package*.json /app/backend/
+COPY --from=backend-builder /app/backend/prisma /app/backend/prisma
+
+# Copy Frontend assets
+COPY --from=frontend-builder /app/frontend/dist /app/frontend/dist
 
 # Environment variables
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Use the backend package.json to start
+# Set working directory to backend for the start command
 WORKDIR /app/backend
 EXPOSE 3000
+
+# Start the application
 CMD ["npm", "run", "start:prod"]
