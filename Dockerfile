@@ -25,6 +25,7 @@ COPY --from=backend-builder /app/backend/dist /app/backend/dist
 COPY --from=backend-builder /app/backend/node_modules /app/backend/node_modules
 COPY --from=backend-builder /app/backend/package*.json /app/backend/
 COPY --from=backend-builder /app/backend/prisma /app/backend/prisma
+RUN mkdir -p /app/backend/uploads
 
 # Copy Frontend assets
 COPY --from=frontend-builder /app/frontend/dist /app/frontend/dist
