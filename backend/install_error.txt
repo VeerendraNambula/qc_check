@@ -1,0 +1,70 @@
+﻿
+> backend@0.0.1 postinstall
+> prisma generate
+
+node.exe : Loaded 
+Prisma config from 
+prisma.config.ts.
+At line:1 char:1
++ & "C:\Program Files
+\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo   
+           : 
+NotSpecifi    ed: 
+(Loaded Prisma     
+c...isma.config.t    
+s.:String) [], Rem   
+ oteException
+    + 
+FullyQualifiedEr    
+rorId : NativeComm   
+ andError
+ 
+
+Prisma config 
+detected, skipping 
+environment variable 
+loading.
+Prisma schema loaded from prisma\schema.prisma
+Error: 
+Cannot find module 'C
+:\Users\nambu\OneDriv
+e\Documents\Desktop\q
+c_check\backend\node_
+modules\@prisma\clien
+t\runtime\query_engin
+e_bg.postgresql.wasm-
+base64.js'
+Require stack:
+- C:\Users\nambu\OneD
+rive\Documents\Deskto
+p\qc_check\backend\no
+de_modules\prisma\bui
+ld\index.js
+
+
+npm error code 1
+npm error path C:\Use
+rs\nambu\OneDrive\Doc
+uments\Desktop\qc_che
+ck\backend
+npm error command 
+failed
+npm error command C:\
+WINDOWS\system32\cmd.
+exe /d /s /c prisma 
+generate
+npm error A complete 
+log of this run can 
+be found in: C:\Users
+\nambu\AppData\Local\
+npm-cache\_logs\2026-
+01-22T19_35_39_022Z-d
+ebug-0.log

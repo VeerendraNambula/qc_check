@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Outfit', 'Inter', sans-serif;
+
+  /* Colors - Premium Palette */
+  --color-qc-primary: #2563eb;
+  /* Royal Blue 600 */
+  --color-qc-primary-dark: #1d4ed8;
+  --color-qc-primary-light: #eff6ff;
+
+  --color-qc-success: #10b981;
+  /* Emerald 500 */
+  --color-qc-success-dark: #059669;
+  --color-qc-success-light: #ecfdf5;
+
+  --color-qc-error: #ef4444;
+  /* Red 500 */
+  --color-qc-error-dark: #dc2626;
+  --color-qc-error-light: #fef2f2;
+
+  --color-qc-warning: #f59e0b;
+  /* Amber 500 */
+  --color-qc-warning-light: #fffbeb;
+
+  --color-qc-bg: #f8fafc;
+  /* Slate 50 */
+  --color-qc-surface: #ffffff;
+  --color-qc-border: #e2e8f0;
+  /* Slate 200 */
+
+  --color-qc-text-main: #0f172a;
+  /* Slate 900 */
+  --color-qc-text-muted: #64748b;
+  /* Slate 500 */
+
+  /* Measurements - 8pt system */
+  --spacing-qc-1: 0.25rem;
+  /* 4px */
+  --spacing-qc-2: 0.5rem;
+  /* 8px */
+  --spacing-qc-3: 0.75rem;
+  /* 12px */
+  --spacing-qc-4: 1rem;
+  /* 16px */
+  --spacing-qc-6: 1.5rem;
+  /* 24px */
+  --spacing-qc-8: 2rem;
+  /* 32px */
+
+  --radius-qc-base: 8px;
+  --radius-qc-lg: 12px;
+
+  --shadow-qc-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-qc-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-qc-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+@layer base {
+  body {
+    @apply bg-qc-bg text-qc-text-main font-sans antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display tracking-tight font-semibold;
+  }
+
+  /* Standardized Button Height */
+  button,
+  .btn {
+    @apply h-10 px-4 rounded-qc-base font-medium transition-all inline-flex items-center justify-center gap-2 cursor-pointer;
+  }
+}
+
+@layer utilities {
+  .card {
+    @apply bg-qc-surface border border-qc-border rounded-qc-lg shadow-qc-sm p-6;
+  }
+
+  .glass {
+    @apply bg-white/80 backdrop-blur-md border border-white/20;
+  }
+
+  .no-print {
+    @media print {
+      display: none !important;
+    }
+  }
+}
+
+@layer base {
+  @media print {
+    @page {
+      margin: 1.5cm;
+    }
+
+    body {
+      background: white !important;
+      color: black !important;
+      font-size: 12pt;
+    }
+
+    /* Report specific layout overrides */
+    main {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+
+    .max-w-5xl {
+      max-width: 100% !important;
+      width: 100% !important;
+    }
+
+    .border-b,
+    .border-t,
+    .border {
+      border-color: #000 !important;
+    }
+
+    /* Ensure images show in print */
+    img {
+      max-width: 100% !important;
+      display: block !important;
+    }
+
+    /* Print Footer Signature Line (visible only in print) */
+    .print-signature {
+      display: block !important;
+      margin-top: 3rem;
+      border-top: 1pt solid #000;
+      width: 200px;
+    }
+  }
+
+  /* Hide signature by default in screen view */
+  .print-signature {
+    display: none;
+  }
+}
