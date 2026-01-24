@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { APP_FILTER } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
@@ -9,6 +10,7 @@ import { QcTasksModule } from './qc-tasks/qc-tasks.module';
 import { AuthModule } from './auth/auth.module';
 import { UploadModule } from './upload/upload.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { SpaFallbackFilter } from './spa-fallback.filter';
 
 @Module({
   imports: [
@@ -28,6 +30,12 @@ import { PrismaModule } from './prisma/prisma.module';
     UploadModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_FILTER,
+      useClass: SpaFallbackFilter,
+    },
+  ],
 })
 export class AppModule { }
