@@ -17,3 +17,4 @@ export class AppController {
   getFallback(@Res() res: Response) {
     res.sendFile(join(process.cwd(), '..', 'frontend', 'dist', 'index.html'));
   }
+}
