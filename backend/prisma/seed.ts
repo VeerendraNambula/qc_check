@@ -115,48 +115,240 @@ async function main() {
 
     if (!inspector) throw new Error("No inspector found");
 
-    // 2. Create a Sample Task
-    const task = await prisma.qcTask.upsert({
-        where: { id: 'sample-task-001' },
-        update: {},
-        create: {
-            id: 'sample-task-001',
-            title: 'Monthly Safety Inspection',
-            description: 'Standard facility check for safety compliance.',
-            status: TaskStatus.IN_PROGRESS,
-            assignedToId: inspector.id,
-            checklists: {
-                create: [
-                    { title: 'Fire Extinguisher Pressure Check', order: 1 },
-                    { title: 'Emergency Exit Lighting Functional', order: 2 },
-                    { title: 'First Aid Kit Restocked', order: 3 },
-                    { title: 'Waste Management Compliance', order: 4 },
-                ],
-            },
+    // 2. Restore Tasks
+    const tasks = [
+        {
+            "id": "1fc06371-9ec8-414b-8804-ae4289f3c63b",
+            "title": "Friday Task",
+            "description": "",
+            "assignedToId": "9335c8f4-d50d-4f14-ac68-73a366dd348e",
+            "status": "COMPLETED",
+            "createdAt": "2026-01-23T17:19:49.251Z",
+            "updatedAt": "2026-01-23T17:45:29.118Z",
+            "checklists": [
+                {
+                    "id": "ad8c1226-d611-418f-858c-400a527bc18f",
+                    "title": "Weekend ",
+                    "order": 1,
+                    "response": {
+                        "id": "17c2c49c-8604-4b34-a0f8-3751af3d3f12",
+                        "status": "APPROVED",
+                        "comment": "good",
+                        "imageUrl": "/uploads/feacf1b26746d2dbae1098af7f43d55fe.jpg",
+                        "createdAt": "2026-01-23T17:45:29.104Z"
+                    }
+                }
+            ]
         },
-        include: { checklists: true },
-    });
+        {
+            "id": "a8c6172f-8d8d-42a7-83b4-f74d1c429ab8",
+            "title": "water check",
+            "description": "",
+            "assignedToId": "ac4fb0de-3efc-4098-93fe-148c5a7aa18e",
+            "status": "COMPLETED",
+            "createdAt": "2026-01-23T18:55:23.735Z",
+            "updatedAt": "2026-01-23T18:56:44.922Z",
+            "checklists": [
+                {
+                    "id": "92f67af0-7e30-4eed-98a3-9f9091570fc0",
+                    "title": "water",
+                    "order": 1,
+                    "response": {
+                        "id": "979c4969-4f10-410d-abdc-43c05d765f73",
+                        "status": "APPROVED",
+                        "comment": "okay",
+                        "imageUrl": "/uploads/1310de97f76111d0b9cca044b62989cd1.jpg",
+                        "createdAt": "2026-01-23T18:56:44.890Z"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "521755ae-16ae-4ca0-85fb-e6ab71016309",
+            "title": "fire ",
+            "description": "",
+            "assignedToId": "ac4fb0de-3efc-4098-93fe-148c5a7aa18e",
+            "status": "IN_PROGRESS",
+            "createdAt": "2026-01-23T19:17:40.362Z",
+            "updatedAt": "2026-01-23T19:29:14.472Z",
+            "checklists": [
+                {
+                    "id": "ac66aacc-715d-4d7f-a60d-9a53f2b376f1",
+                    "title": "fire",
+                    "order": 1,
+                    "response": null
+                },
+                {
+                    "id": "f465282c-7c6c-4aef-934c-273914ceef0b",
+                    "title": "water",
+                    "order": 2,
+                    "response": null
+                }
+            ]
+        },
+        {
+            "id": "0c33faa8-0c91-4f99-904e-dde146707675",
+            "title": "star",
+            "description": "",
+            "assignedToId": "ac4fb0de-3efc-4098-93fe-148c5a7aa18e",
+            "status": "REJECTED",
+            "createdAt": "2026-01-23T19:34:32.030Z",
+            "updatedAt": "2026-01-23T19:34:55.981Z",
+            "checklists": [
+                {
+                    "id": "1c09b199-5ecb-47e8-8176-2c2751768dbf",
+                    "title": "star",
+                    "order": 1,
+                    "response": {
+                        "id": "7441d71f-d9c1-4ea4-9500-60e8382a6d64",
+                        "status": "REJECTED",
+                        "comment": "bad",
+                        "imageUrl": "/uploads/976e9e1b60ba68dd9b32f5f33469a4c9.jpg",
+                        "createdAt": "2026-01-23T19:34:55.945Z"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "c7b2281e-6d96-4f6c-8645-ee17c6c746e0",
+            "title": "star",
+            "description": "",
+            "assignedToId": null,
+            "status": "PENDING",
+            "createdAt": "2026-01-23T20:14:57.671Z",
+            "updatedAt": "2026-01-23T20:14:57.671Z",
+            "checklists": [
+                {
+                    "id": "73239169-d10a-4436-8f01-5e79f6535187",
+                    "title": "star",
+                    "order": 1,
+                    "response": null
+                }
+            ]
+        },
+        {
+            "id": "686b8766-36a6-41bb-90d6-b90c667644d5",
+            "title": "PDNA creation",
+            "description": "",
+            "assignedToId": "9335c8f4-d50d-4f14-ac68-73a366dd348e",
+            "status": "COMPLETED",
+            "createdAt": "2026-01-22T21:01:09.458Z",
+            "updatedAt": "2026-01-24T00:11:43.210Z",
+            "checklists": [
+                {
+                    "id": "2068ee11-2b53-4cd9-bffd-fb3cdff9da88",
+                    "title": "Problem Structure",
+                    "order": 1,
+                    "response": {
+                        "id": "f35c6221-e1f6-4155-813d-0aa4187b1cf0",
+                        "status": "APPROVED",
+                        "comment": "okay",
+                        "imageUrl": "/uploads/1464787af53e4610e578eded8e41da421.jpeg",
+                        "createdAt": "2026-01-23T17:44:47.899Z"
+                    }
+                },
+                {
+                    "id": "6fbf98ef-8e8f-4179-90d6-2bbddae521a2",
+                    "title": "Descriptive Analytics",
+                    "order": 2,
+                    "response": {
+                        "id": "228b2bf2-c5e3-475c-b5ef-087a9898b49d",
+                        "status": "APPROVED",
+                        "comment": "good",
+                        "imageUrl": "/uploads/78bb2e1838eec59369b5f910d4281c7ca.jpeg",
+                        "createdAt": "2026-01-23T17:44:47.900Z"
+                    }
+                },
+                {
+                    "id": "1a4eead5-5edf-496d-ad85-a66960825893",
+                    "title": "Predictive Analytics",
+                    "order": 3,
+                    "response": {
+                        "id": "c7a5a397-4190-4f0d-983d-977fef9c1f6b",
+                        "status": "APPROVED",
+                        "comment": "okay",
+                        "imageUrl": "/uploads/1597e910b8833eb24f178ad93d8f74c2.jpg",
+                        "createdAt": "2026-01-23T17:44:47.903Z"
+                    }
+                },
+                {
+                    "id": "b021ab87-1126-45bf-83e6-884e969a5704",
+                    "title": "Prescriptive Analytics",
+                    "order": 4,
+                    "response": {
+                        "id": "543ee1ea-6694-4075-b2c9-2f4f65b91543",
+                        "status": "APPROVED",
+                        "comment": "okay",
+                        "imageUrl": "/uploads/84a68102205c883582bc2f769706c81a10.jpg",
+                        "createdAt": "2026-01-23T17:44:47.907Z"
+                    }
+                }
+            ]
+        }
+    ];
 
-    console.log('Task created:', task.title);
-
-    // 3. Add a sample response to one item (if checklists exist and not already responded)
-    if (task.checklists.length > 0) {
-        const firstChecklist = task.checklists[0];
-        const existingResponse = await prisma.qcResponse.findUnique({
-            where: { checklistId: firstChecklist.id }
+    for (const t of tasks) {
+        // Upsert Task
+        await prisma.qcTask.upsert({
+            where: { id: t.id },
+            update: {
+                title: t.title,
+                description: t.description,
+                status: t.status as TaskStatus,
+                assignedToId: t.assignedToId,
+                updatedAt: new Date(t.updatedAt),
+                createdAt: new Date(t.createdAt)
+            },
+            create: {
+                id: t.id,
+                title: t.title,
+                description: t.description,
+                status: t.status as TaskStatus,
+                assignedToId: t.assignedToId,
+                updatedAt: new Date(t.updatedAt),
+                createdAt: new Date(t.createdAt)
+            }
         });
 
-        if (!existingResponse) {
-            await prisma.qcResponse.create({
-                data: {
-                    checklistId: firstChecklist.id,
-                    status: ResponseStatus.APPROVED,
-                    comment: 'Pressure gauge is in the green zone.',
-                    imageUrl: '/uploads/sample-fire-extinguisher.jpg',
+        // Upsert Checklists & Responses
+        for (const c of t.checklists) {
+            await prisma.checklist.upsert({
+                where: { id: c.id },
+                update: {
+                    title: c.title,
+                    order: c.order,
+                    taskId: t.id
                 },
+                create: {
+                    id: c.id,
+                    title: c.title,
+                    order: c.order,
+                    taskId: t.id
+                }
             });
-            console.log('Sample response added.');
+
+            if (c.response) {
+                await prisma.qcResponse.upsert({
+                    where: { id: c.response.id },
+                    update: {
+                        status: c.response.status as ResponseStatus,
+                        comment: c.response.comment,
+                        imageUrl: c.response.imageUrl,
+                        createdAt: new Date(c.response.createdAt),
+                        checklistId: c.id
+                    },
+                    create: {
+                        id: c.response.id,
+                        status: c.response.status as ResponseStatus,
+                        comment: c.response.comment,
+                        imageUrl: c.response.imageUrl,
+                        createdAt: new Date(c.response.createdAt),
+                        checklistId: c.id
+                    }
+                });
+            }
         }
+        console.log(`Task upserted: ${t.title}`);
     }
 
     console.log('Seeding finished.');
