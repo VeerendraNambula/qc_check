@@ -1,11 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { RequestMethod } from '@nestjs/common';
 
 async function bootstrap() {
   console.log('Bootstrap starting...');
   const app = await NestFactory.create(AppModule);
   console.log('App created.');
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api', {
+    exclude: [{ path: '*', method: RequestMethod.GET }],
+  });
   app.enableCors({
     origin: true, // Allow any origin
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
