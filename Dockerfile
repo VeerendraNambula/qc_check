@@ -40,4 +40,5 @@ EXPOSE 3000
 
 # Start the application
 # Start the application with migrations and seeding
-CMD ["/bin/sh", "-c", "npx prisma migrate deploy && npx prisma db seed && npm run start:prod"]
+# Start the application with db push (force sync) and seeding
+CMD ["/bin/sh", "-c", "npx prisma db push --accept-data-loss && npx prisma db seed && npm run start:prod"]
