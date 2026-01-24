@@ -22,6 +22,24 @@ export class SpaFallbackFilter implements ExceptionFilter {
 
         // Otherwise serve index.html for SPA routing
         const indexPath = join(process.cwd(), '..', 'frontend', 'dist', 'index.html');
-        response.sendFile(indexPath);
+
+        if (!require('fs').existsSync(indexPath)) {
+            console.error(`SPA Fallback Error: Index file not found at ${indexPath}`);
+            response.status(404).json({
+                statusCode: 404,
+                message: 'SPA index.html not found',
+                error: 'Not Found'
+            });
+            return;
+        }
+
+        response.sendFile(indexPath, (err) => {
+            if (err) {
+                console.error('SPA Fallback Error: sendFile failed', err);
+                if (!response.headersSent) {
+                    response.status(500).json({ statusCode: 500, message: 'Could not serve index.html' });
+                }
+            }
+        });
     }
 }
