@@ -312,7 +312,7 @@ async function main() {
 
         // Upsert Checklists & Responses
         for (const c of t.checklists) {
-            await prisma.checklist.upsert({
+            await prisma.qcChecklist.upsert({
                 where: { id: c.id },
                 update: {
                     title: c.title,
