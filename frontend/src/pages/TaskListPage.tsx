@@ -300,7 +300,7 @@ export const TaskListPage: React.FC = () => {
                                                     <div className="flex items-center gap-2">
                                                         <div className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-qc-text-main border border-qc-border overflow-hidden">
                                                             {task.assignedTo.profilePictureUrl ? (
-                                                                <img src={`http://localhost:3000${task.assignedTo.profilePictureUrl}`} alt={task.assignedTo.name} className="w-full h-full object-cover" />
+                                                                <img src={task.assignedTo.profilePictureUrl} alt={task.assignedTo.name} className="w-full h-full object-cover" />
                                                             ) : (
                                                                 task.assignedTo.name.charAt(0)
                                                             )}

@@ -16,9 +16,10 @@ import { PrismaModule } from './prisma/prisma.module';
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'uploads'),
       serveRoot: '/uploads',
-    }, {
-      rootPath: join(process.cwd(), '../frontend/dist'),
-      exclude: ['/api/:path*', '/auth/:path*', '/qc/:path*', '/upload/:path*', '/users/:path*'],
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), '..', 'frontend', 'dist'),
+      exclude: ['/api/(.*)', '/uploads/(.*)'],
     }),
     PrismaModule,
     UsersModule,

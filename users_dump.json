@@ -1,0 +1,74 @@
+[
+  {
+    "id": "ac4fb0de-3efc-4098-93fe-148c5a7aa18e",
+    "name": "Teja Dammalapa",
+    "username": "1700",
+    "password": "Damm@420",
+    "role": "USER",
+    "email": null,
+    "resetToken": null,
+    "resetTokenExpiry": null,
+    "profilePictureUrl": null,
+    "createdAt": "2026-01-23T18:53:41.228Z"
+  },
+  {
+    "id": "e2d66411-1a3d-4fe7-813d-0451b36ecc02",
+    "name": "Charan",
+    "username": "1701",
+    "password": "Zooran@420",
+    "role": "USER",
+    "email": null,
+    "resetToken": null,
+    "resetTokenExpiry": null,
+    "profilePictureUrl": null,
+    "createdAt": "2026-01-23T19:38:57.783Z"
+  },
+  {
+    "id": "e744c5a2-586c-43cc-be80-10d9278067ff",
+    "name": "Ram",
+    "username": "1702",
+    "password": "$2b$10$Q7HPlxj2ZGUzI0G3x5AHOeoP7/SncTjTqsRWdvvwgls9Rmb1X5Nz.",
+    "role": "USER",
+    "email": null,
+    "resetToken": null,
+    "resetTokenExpiry": null,
+    "profilePictureUrl": null,
+    "createdAt": "2026-01-23T20:46:28.738Z"
+  },
+  {
+    "id": "9335c8f4-d50d-4f14-ac68-73a366dd348e",
+    "name": "Veerendra",
+    "username": "1722",
+    "password": "$2b$10$s.zNB5ip10ispkopvSrA3.EDUASC/JbndiZEt7.wXVZWymFe4sGpm",
+    "role": "ADMIN",
+    "email": "nambulaveerendra@gmail.com",
+    "resetToken": "d3349e602397157ed928eae08eaee6d1996e05fd01e5f9035ecd645c7ae1df97",
+    "resetTokenExpiry": "2026-01-23T22:23:31.992Z",
+    "profilePictureUrl": "/uploads/a7d2ad2df60bec9a7011aed6dd994f4a.jpg",
+    "createdAt": "2026-01-23T16:46:31.041Z"
+  },
+  {
+    "id": "d8334b0b-55ba-4725-ad37-9a04a7596a02",
+    "name": "1705",
+    "username": "Raghav",
+    "password": "$2b$10$lkI1ESBl2qMZU8YAHWmeLecepS3FV7BxTlqj1Aqff9KztVfnmotaG",
+    "role": "USER",
+    "email": "vigilviru926@gmail.com",
+    "resetToken": "f468a4fe5e6cb980c6658dd9a453e43adc73f8e77026c599f3cebf59226c6a60",
+    "resetTokenExpiry": "2026-01-23T22:26:00.369Z",
+    "profilePictureUrl": null,
+    "createdAt": "2026-01-23T21:24:58.786Z"
+  },
+  {
+    "id": "test-inspector-uuid",
+    "name": "John Doe",
+    "username": "admin",
+    "password": "$2b$10$cUOnHs5ywL.6F5sToy51bOY2Kvt8b9jA7ABfkl7G7E7px/gKePoWq",
+    "role": "USER",
+    "email": null,
+    "resetToken": null,
+    "resetTokenExpiry": null,
+    "profilePictureUrl": null,
+    "createdAt": "2026-01-23T23:32:07.792Z"
+  }
+]

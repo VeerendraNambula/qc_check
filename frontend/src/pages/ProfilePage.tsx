@@ -141,7 +141,7 @@ export const ProfilePage: React.FC = () => {
                     <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
                         <div className="h-24 w-24 bg-qc-primary rounded-full flex items-center justify-center text-white text-3xl font-black shadow-qc-md overflow-hidden border-4 border-white ring-2 ring-qc-border/50">
                             {user?.profilePictureUrl ? (
-                                <img src={`http://localhost:3000${user.profilePictureUrl}`} alt={user.name} className="h-full w-full object-cover" />
+                                <img src={user.profilePictureUrl} alt={user.name} className="h-full w-full object-cover" />
                             ) : (
                                 user?.name?.charAt(0) || <User size={32} />
                             )}

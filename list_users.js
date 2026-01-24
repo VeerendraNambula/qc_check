@@ -1,16 +1,18 @@
 
+const fs = require('fs');
+
 async function listUsers() {
     try {
-        console.log("Fetching users...");
-        const res = await fetch('http://localhost:3000/users');
+        const res = await fetch('http://localhost:3000/api/users');
         if (!res.ok) {
-            console.error("Failed to fetch:", res.status);
+            fs.writeFileSync('users_dump.json', `Error: ${res.status} ${res.statusText}`);
             return;
         }
         const users = await res.json();
-        console.log("Users in DB:", JSON.stringify(users, null, 2));
+        fs.writeFileSync('users_dump.json', JSON.stringify(users, null, 2));
+        console.log("Users dumped to users_dump.json");
     } catch (e) {
-        console.error("Error:", e);
+        fs.writeFileSync('users_dump.json', `Exception: ${e.message}`);
     }
 }
 listUsers();

@@ -1,0 +1,13 @@
+Login Verification Results:
+Trying admin:password123
+Status: 201
+SUCCESS! Token: mock-jwt-t...
+---
+Trying 1700:Damm@420
+Status: 201
+SUCCESS! Token: mock-jwt-t...
+---
+Trying test-inspector:password123
+Status: 401
+FAILED! Check: {"message":"Invalid User ID","error":"Unauthorized","statusCode":401}
+---

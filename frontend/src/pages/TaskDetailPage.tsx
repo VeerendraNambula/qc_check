@@ -361,7 +361,7 @@ export const TaskDetailPage: React.FC = () => {
                                         {(existingResponse?.imageUrl || currentImage) ? (
                                             <div className="relative group rounded-qc-lg overflow-hidden border border-qc-border aspect-video bg-slate-50">
                                                 <img
-                                                    src={existingResponse?.imageUrl ? `${api.defaults.baseURL}${existingResponse.imageUrl}` : `${api.defaults.baseURL}${currentImage}`}
+                                                    src={existingResponse?.imageUrl ? existingResponse.imageUrl : currentImage}
                                                     alt="Evidence"
                                                     className="w-full h-full object-cover"
                                                 />

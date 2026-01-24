@@ -135,7 +135,7 @@ export const AssignTaskModal: React.FC<AssignTaskModalProps> = ({ isOpen, onClos
                                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border transition-colors ${selectedUserId === user.id ? 'bg-qc-primary text-white border-qc-primary' : 'bg-slate-100 text-qc-text-muted border-qc-border'
                                     }`}>
                                     {user.profilePictureUrl ? (
-                                        <img src={`http://localhost:3000${user.profilePictureUrl}`} alt={user.name} className="w-full h-full object-cover rounded-full" />
+                                        <img src={user.profilePictureUrl} alt={user.name} className="w-full h-full object-cover rounded-full" />
                                     ) : (
                                         user.name.charAt(0)
                                     )}
