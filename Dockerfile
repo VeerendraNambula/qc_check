@@ -42,4 +42,5 @@ EXPOSE 3000
 # Start the application with migrations and seeding
 # Start the application with db push (force sync) and seeding
 # Start the application with db push (force sync) and seeding. Force reset to clear failed migration state.
-CMD ["/bin/sh", "-c", "npx prisma db push --accept-data-loss --force-reset && npx prisma db seed && npm run start:prod"]
+# Start the application with db push (force sync) and seeding. Removed force-reset to persist data.
+CMD ["/bin/sh", "-c", "npx prisma db push --accept-data-loss && npx prisma db seed && npm run start:prod"]
