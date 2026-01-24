@@ -22,8 +22,11 @@ async function main() {
     console.log('User created:', inspector.name);
 
     // 2. Create a Sample Task
-    const task = await prisma.qcTask.create({
-        data: {
+    const task = await prisma.qcTask.upsert({
+        where: { id: 'sample-task-001' },
+        update: {},
+        create: {
+            id: 'sample-task-001',
             title: 'Monthly Safety Inspection',
             description: 'Standard facility check for safety compliance.',
             status: TaskStatus.IN_PROGRESS,
@@ -42,15 +45,25 @@ async function main() {
 
     console.log('Task created:', task.title);
 
-    // 3. Add a sample response to one item
-    await prisma.qcResponse.create({
-        data: {
-            checklistId: task.checklists[0].id,
-            status: ResponseStatus.APPROVED,
-            comment: 'Pressure gauge is in the green zone.',
-            imageUrl: '/uploads/sample-fire-extinguisher.jpg',
-        },
-    });
+    // 3. Add a sample response to one item (if checklists exist and not already responded)
+    if (task.checklists.length > 0) {
+        const firstChecklist = task.checklists[0];
+        const existingResponse = await prisma.qcResponse.findUnique({
+            where: { checklistId: firstChecklist.id }
+        });
+
+        if (!existingResponse) {
+            await prisma.qcResponse.create({
+                data: {
+                    checklistId: firstChecklist.id,
+                    status: ResponseStatus.APPROVED,
+                    comment: 'Pressure gauge is in the green zone.',
+                    imageUrl: '/uploads/sample-fire-extinguisher.jpg',
+                },
+            });
+            console.log('Sample response added.');
+        }
+    }
 
     console.log('Seeding finished.');
 }

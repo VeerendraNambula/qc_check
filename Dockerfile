@@ -39,4 +39,5 @@ WORKDIR /app/backend
 EXPOSE 3000
 
 # Start the application
-CMD ["npm", "run", "start:prod"]
+# Start the application with migrations and seeding
+CMD ["/bin/sh", "-c", "npx prisma migrate deploy && npx prisma db seed && npm run start:prod"]
