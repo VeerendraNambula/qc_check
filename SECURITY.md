@@ -4,22 +4,30 @@ This repository is a development/portfolio project and must not be treated as a 
 
 ## Known limitations identified during repository review
 
-- The login service currently returns a mock token rather than a signed, verifiable session token.
-- The user and QC task controllers do not currently enforce authentication or role-based authorization guards.
-- User read endpoints have historically returned complete database records; API response fields and access controls require a full review before deployment.
-- The upload endpoint does not currently enforce an authenticated uploader, file-size limit, or strict file-type validation.
-- Password recovery needs account-enumeration protection, rate limiting, and a production-safe email configuration.
+- Login still returns a placeholder token, not a signed or verifiable session.
+- User and QC task controllers do not currently enforce authentication or role-based authorization guards.
+- The upload endpoint does not enforce an authenticated uploader, file-size limit, or strict file-type validation.
+- Password recovery requires a configured mail transport and still needs rate limiting and abuse monitoring.
 - CORS currently accepts arbitrary origins while credentials are enabled.
-- The application has no demonstrated production security test suite.
+- The application does not yet demonstrate a production security test suite.
+
+## Improvements made in this cleanup
+
+- Removed committed database exports, login test payloads, user seed data, uploaded evidence images, and generated diagnostic/build logs from the current branch.
+- User and assigned-user API responses now explicitly select non-secret fields rather than returning password hashes or password-reset tokens.
+- Login now requires a password and only accepts bcrypt password hashes; the plaintext-password fallback was removed.
+- Password-reset links are no longer printed to application logs, account-not-found responses are generic, and SMTP credentials must come from environment variables.
+- Docker startup no longer runs schema synchronization with `--accept-data-loss` or seeds accounts automatically.
+- Added ignore rules for local secrets, uploads, dumps, logs, and build artifacts.
 
 ## Safe handling
 
 - Never commit `.env` files, database exports, login payloads, reset tokens, user dumps, uploaded evidence, or generated logs.
 - Use synthetic data only in public demonstrations.
 - Store secrets in the deployment platform's secret manager.
-- Rotate any credential or token that was previously committed to a public repository.
+- Rotate credentials and invalidate reset tokens that were previously committed to a public repository.
 - Back up databases before applying schema changes.
 
 ## Before production use
 
-Implement and test signed authentication, route guards and role-based authorization, response-field allowlists, DTO validation, rate limiting, secure password recovery, upload validation/storage controls, a strict CORS allowlist, and a reviewed migration/baselining process.
+Implement and test signed authentication, route guards and role-based authorization, rate limiting, DTO validation, secure password recovery, upload validation/storage controls, a strict CORS allowlist, and a reviewed migration/baselining process.
