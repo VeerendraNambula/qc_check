@@ -22,31 +22,19 @@ qc_check/
 
 ## Local development
 
-### 1. Start PostgreSQL
-
-Create `backend/.env` with a local database password:
+Create `backend/.env` from this example, replacing the local password:
 
 ```dotenv
 POSTGRES_PASSWORD=choose-a-local-password
+DATABASE_URL=postgresql://qc_user:choose-a-local-password@localhost:5432/qc_db?schema=public
+CORS_ORIGINS=http://localhost:5173
 ```
 
-Then start PostgreSQL:
+From the repository root, start PostgreSQL and the API:
 
 ```bash
 cd backend
 docker compose up -d
-```
-
-Add the frontend origin to `backend/.env` as well. For local development, use `CORS_ORIGINS=http://localhost:5173`; in deployment, set it to the exact frontend origin(s), comma-separated. Set `DATABASE_URL` in `backend/.env`, for example:
-
-```dotenv
-DATABASE_URL=postgresql://qc_user:choose-a-local-password@localhost:5432/qc_db?schema=public
-```
-
-### 2. Start the API
-
-```bash
-cd backend
 npm ci
 npx prisma generate
 npx prisma migrate deploy
@@ -55,9 +43,7 @@ npm run start:dev
 
 The API listens on port `3000` by default.
 
-### 3. Start the frontend
-
-In a separate terminal:
+In a second terminal, start the frontend:
 
 ```bash
 cd frontend
@@ -75,6 +61,7 @@ For an existing database that was created with `db push`, review and baseline th
 
 ## API areas
 
+- `/api/health` — health check
 - `/api/auth` — login and password-recovery endpoints
 - `/api/users` — user management
 - `/api/qc/tasks` — QC task and checklist workflows
@@ -82,4 +69,4 @@ For an existing database that was created with `db push`, review and baseline th
 
 ## Security status
 
-This is a portfolio/development project, **not production-ready**. See [SECURITY.md](SECURITY.md) for known limitations and hardening work. Do not use real customer records, credentials, or private inspection images in this public repository.
+This is a portfolio/development project, **not production-ready**. Authentication tokens and route authorization still need implementation and security testing. See [SECURITY.md](SECURITY.md) for the current review and remaining work. Do not use real customer records, credentials, or private inspection images in this public repository.
