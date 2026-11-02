@@ -4,7 +4,7 @@ NestJS 11 REST API with Prisma and PostgreSQL.
 
 ## Local setup
 
-1. Create `.env` in this directory and configure `DATABASE_URL`.
+1. Create `.env` in this directory and configure `DATABASE_URL` and `CORS_ORIGINS` (for local development, `CORS_ORIGINS=http://localhost:5173`).
 2. Install dependencies and generate Prisma Client:
 
 ```bash

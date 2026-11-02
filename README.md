@@ -37,7 +37,7 @@ cd backend
 docker compose up -d
 ```
 
-Set `DATABASE_URL` in `backend/.env`, for example:
+Add the frontend origin to `backend/.env` as well. For local development, use `CORS_ORIGINS=http://localhost:5173`; in deployment, set it to the exact frontend origin(s), comma-separated. Set `DATABASE_URL` in `backend/.env`, for example:
 
 ```dotenv
 DATABASE_URL=postgresql://qc_user:choose-a-local-password@localhost:5432/qc_db?schema=public
