@@ -18,7 +18,7 @@ const safeUserSelect = {
   email: true,
   profilePictureUrl: true,
   createdAt: true,
-};
+} as const;
 
 @Injectable()
 export class UsersService {

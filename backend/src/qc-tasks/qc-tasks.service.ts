@@ -9,7 +9,7 @@ const assignedUserSelect = {
   username: true,
   role: true,
   profilePictureUrl: true,
-};
+} as const;
 
 @Injectable()
 export class QcTasksService {

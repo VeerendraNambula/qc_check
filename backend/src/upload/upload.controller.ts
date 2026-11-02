@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Controller,
   Post,
   UseInterceptors,
@@ -6,8 +7,14 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { randomBytes } from 'crypto';
 import type { Express } from 'express';
+
+const allowedImageTypes: Record<string, string> = {
+  'image/jpeg': '.jpg',
+  'image/png': '.png',
+  'image/webp': '.webp',
+};
 
 @Controller('upload')
 export class UploadController {
@@ -16,17 +23,34 @@ export class UploadController {
     FileInterceptor('file', {
       storage: diskStorage({
         destination: './uploads',
-        filename: (req, file, cb) => {
-          const randomName = Array(32)
-            .fill(null)
-            .map(() => Math.round(Math.random() * 16).toString(16))
-            .join('');
-          return cb(null, `${randomName}${extname(file.originalname)}`);
+        filename: (_req, file, cb) => {
+          const extension = allowedImageTypes[file.mimetype];
+          cb(null, `${randomBytes(16).toString('hex')}${extension}`);
         },
       }),
+      limits: {
+        fileSize: 5 * 1024 * 1024,
+        files: 1,
+      },
+      fileFilter: (_req, file, cb) => {
+        if (!allowedImageTypes[file.mimetype]) {
+          cb(
+            new BadRequestException(
+              'Only JPEG, PNG, and WebP image uploads are allowed',
+            ),
+            false,
+          );
+          return;
+        }
+        cb(null, true);
+      },
     }),
   )
   uploadFile(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('A valid image file is required');
+    }
+
     return {
       url: `/uploads/${file.filename}`,
     };

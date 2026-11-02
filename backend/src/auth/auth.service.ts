@@ -90,7 +90,7 @@ export class AuthService {
 
     await this.transporter.sendMail({
       from: process.env.SMTP_FROM || process.env.SMTP_USER,
-      to: user.email,
+      to: user.email ?? forgotPasswordDto.email,
       subject: 'Password Reset Request',
       text: `Use this link to reset your password: ${resetLink}`,
       html: `<p>Use <a href="${resetLink}">this link</a> to reset your password.</p>`,

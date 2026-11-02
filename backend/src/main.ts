@@ -1,21 +1,37 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 
-
 async function bootstrap() {
-  console.log('Bootstrap starting...');
   const app = await NestFactory.create(AppModule);
-  console.log('App created.');
   app.setGlobalPrefix('api');
+
+  const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:5173')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
   app.enableCors({
-    origin: true, // Allow any origin
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error('Origin not allowed by CORS'));
+    },
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
-  console.log('CORS enabled with permissive config.');
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
+
   const port = process.env.PORT ?? 3000;
-  console.log(`Attempting to listen on port ${port}...`);
   await app.listen(port, '0.0.0.0');
-  console.log(`Application is listening on: ${await app.getUrl()}`);
 }
 bootstrap();
