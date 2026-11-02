@@ -1,0 +1,29 @@
+# Dependencies and build output
+**/node_modules/
+**/dist/
+**/coverage/
+**/.vite/
+**/.turbo/
+
+# Environment and local secrets
+**/.env
+**/.env.*
+!**/.env.example
+
+# Runtime uploads and generated data
+backend/uploads/*
+!backend/uploads/.gitkeep
+users*.json
+login*.json
+login_results.txt
+error.json
+
+# Logs, debug output, backups and local tooling
+*.log
+**/*_log.txt
+**/build_out*.txt
+**/out*.txt
+**/prisma_error*.txt
+**/*.bak
+.DS_Store
+.vscode/

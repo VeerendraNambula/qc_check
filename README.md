@@ -1,94 +1,85 @@
 # Quality Check Management System
 
-A full-stack application for managing quality-inspection tasks, assigning work, and recording checklist-based inspection evidence.
+A full-stack quality-inspection workflow application for creating QC tasks, assigning work, completing ordered checklists, and recording inspection evidence.
 
-## Overview
+## Stack
 
-The application provides a workflow for teams to create and assign QC tasks, complete inspection checklists, attach evidence, and track task status.
+- **Frontend:** React 19, TypeScript, Vite, Tailwind CSS 4, TanStack Query
+- **Backend:** NestJS 11, TypeScript, REST API
+- **Data:** PostgreSQL and Prisma
+- **Build/deployment:** Docker multi-stage build, Render configuration
 
-## Features
-
-- Create, assign, and view quality-check tasks.
-- Organize inspections into ordered checklists.
-- Submit inspection responses with comments and image evidence.
-- Track task states: pending, in progress, completed, and rejected.
-- Support administrator and user roles.
-- Store task, checklist, and response data in PostgreSQL.
-
-## Technology stack
-
-| Layer | Technologies |
-| --- | --- |
-| Frontend | React 19, TypeScript, Vite, Tailwind CSS 4 |
-| Data fetching | TanStack Query, Axios |
-| Backend | NestJS 11, TypeScript |
-| ORM | Prisma |
-| Database | PostgreSQL |
-| Supporting tools | Docker, React Router, Lucide |
-
-## Repository structure
+## Repository layout
 
 ```text
 qc_check/
-├── backend/          # NestJS API and Prisma schema
-├── frontend/         # React + Vite application
-├── Dockerfile        # Multi-stage container build
+├── backend/       # NestJS API, Prisma schema and migrations
+├── frontend/      # React + Vite application
+├── Dockerfile
+├── SECURITY.md
 └── README.md
 ```
 
-## Run locally
+## Local development
 
 ### 1. Start PostgreSQL
 
-Docker Compose configuration is available in the backend directory:
+Create `backend/.env` with a local database password:
+
+```dotenv
+POSTGRES_PASSWORD=choose-a-local-password
+```
+
+Then start PostgreSQL:
 
 ```bash
 cd backend
 docker compose up -d
 ```
 
-### 2. Configure the backend
+Set `DATABASE_URL` in `backend/.env`, for example:
 
-Create `backend/.env` and set `DATABASE_URL` to your PostgreSQL connection string. Do not commit real credentials.
+```dotenv
+DATABASE_URL=postgresql://qc_user:choose-a-local-password@localhost:5432/qc_db?schema=public
+```
 
-Install dependencies and prepare Prisma:
+### 2. Start the API
 
 ```bash
-npm install
+cd backend
+npm ci
 npx prisma generate
-npx prisma db push
+npx prisma migrate deploy
 npm run start:dev
 ```
 
-The API starts on `http://localhost:3000`.
+The API listens on port `3000` by default.
 
 ### 3. Start the frontend
 
-In a second terminal:
+In a separate terminal:
 
 ```bash
 cd frontend
-npm install
+npm ci
 npm run dev
 ```
 
-Vite serves the frontend at `http://localhost:5173` by default.
+Vite normally serves the frontend at `http://localhost:5173`.
 
-## API overview
+## Database migrations
 
-The current project README documents these routes:
+Schema changes should be committed as Prisma migrations. Do not run `prisma db push --accept-data-loss` against a database with data that must be preserved.
 
-| Method | Route | Purpose |
-| --- | --- | --- |
-| GET | `/qc/tasks` | List QC tasks |
-| GET | `/qc/tasks/:id` | Retrieve a task |
-| POST | `/qc/tasks/:id/submit` | Submit checklist inspection data |
-| POST | `/upload` | Upload evidence image |
+For an existing database that was created with `db push`, review and baseline the initial migration against a backup before running `prisma migrate deploy`. Do not assume an existing production database is ready for the migration history in this repository.
 
-## Deployment note
+## API areas
 
-Review the current Docker startup command before using it with production data: it runs Prisma schema synchronization with `--accept-data-loss` and executes the seed script at container startup. Use a reviewed migration and deployment process for any environment containing data that must be preserved.
+- `/api/auth` — login and password-recovery endpoints
+- `/api/users` — user management
+- `/api/qc/tasks` — QC task and checklist workflows
+- `/api/upload` — inspection evidence upload
 
-## Status
+## Security status
 
-This repository is a development project. Configuration, deployment hardening, and automated test coverage should be reviewed before production use.
+This is a portfolio/development project, **not production-ready**. See [SECURITY.md](SECURITY.md) for known limitations and hardening work. Do not use real customer records, credentials, or private inspection images in this public repository.
