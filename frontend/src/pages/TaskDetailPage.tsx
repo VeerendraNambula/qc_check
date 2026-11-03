@@ -28,12 +28,14 @@ import {
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { clsx } from 'clsx';
+import { canInspectTask, isAdminRole } from '../utils/taskPermissions.js';
 
 export const TaskDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-    const isAdmin = localStorage.getItem('role') === 'ADMIN';
+    const role = localStorage.getItem('role');
+    const isAdmin = isAdminRole(role);
     const currentUserId = localStorage.getItem('userId');
 
     const [comments, setComments] = useState<Record<string, string>>({});
@@ -168,7 +170,7 @@ export const TaskDetailPage: React.FC = () => {
 
     const completedCount = task.checklists.filter(item => !!item.response).length;
     const progress = task.checklists.length ? (completedCount / task.checklists.length) * 100 : 0;
-    const canInspect = isAdmin || (!!currentUserId && task.assignedToId === currentUserId);
+    const canInspect = canInspectTask({ role, userId: currentUserId, assignedToId: task.assignedToId });
     const isAllResponded = task.checklists.every(item => !!item.response || (responses[item.id] && uploadedImages[item.id] && comments[item.id]));
 
     return (
