@@ -167,7 +167,8 @@ export const TaskDetailPage: React.FC = () => {
     }
 
     const completedCount = task.checklists.filter(item => !!item.response).length;
-    const progress = (completedCount / task.checklists.length) * 100;
+    const progress = task.checklists.length ? (completedCount / task.checklists.length) * 100 : 0;
+    const canInspect = isAdmin || (!!currentUserId && task.assignedToId === currentUserId);
     const isAllResponded = task.checklists.every(item => !!item.response || (responses[item.id] && uploadedImages[item.id] && comments[item.id]));
 
     return (
@@ -320,6 +321,11 @@ export const TaskDetailPage: React.FC = () => {
                                 </div>
 
                                 {/* Item Body */}
+                                {!canInspect ? (
+                                    <div className="p-6 text-sm font-semibold text-qc-text-muted">
+                                        Claim this task to submit inspection decisions, notes, and evidence.
+                                    </div>
+                                ) : (
                                 <div className="p-6 grid grid-cols-1 lg:grid-cols-2 gap-10">
                                     {/* Decision & Comments */}
                                     <div className="space-y-6">
@@ -404,6 +410,7 @@ export const TaskDetailPage: React.FC = () => {
                                         )}
                                     </div>
                                 </div>
+                                )}
                                 <div className="print-signature">Inspector Signature</div>
                             </section>
                         );
@@ -431,7 +438,7 @@ export const TaskDetailPage: React.FC = () => {
                             Print Report
                         </Button>
 
-                        {task.status !== 'COMPLETED' && (
+                        {canInspect && task.status !== 'COMPLETED' && task.status !== 'REJECTED' && (
                             <div className="flex flex-col items-end gap-1">
                                 <Button
                                     variant="primary"
