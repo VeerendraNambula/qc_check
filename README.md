@@ -49,12 +49,13 @@ qc_check/
 
 Requirements: Node.js (LTS), npm, and Docker with Docker Compose.
 
-Create `backend/.env` and replace the example password with a local value:
+Create `backend/.env` from `backend/.env.example`. Set a strong local `JWT_SECRET` (for example, generate one with `openssl rand -base64 48`) and replace the database password with a local value:
 
 ```dotenv
 POSTGRES_PASSWORD=choose-a-local-password
 DATABASE_URL=postgresql://qc_user:choose-a-local-password@localhost:5432/qc_db?schema=public
 CORS_ORIGINS=http://localhost:5173
+JWT_SECRET=replace-with-at-least-32-random-characters
 ```
 
 Start PostgreSQL and the API:
@@ -96,6 +97,6 @@ For an existing database created with `db push`, back up the database and review
 
 ## Security status
 
-This is a portfolio/development project, **not production-ready**. Authentication tokens and route authorization still need implementation and security testing. Review [SECURITY.md](SECURITY.md) for the current security assessment and remaining work.
+This is a portfolio/development project, **not production-ready**. Signed JWT authentication, API guards, and role-based route controls are implemented, but rate limiting, session revocation, comprehensive authorization tests, and a production deployment review remain. Review [SECURITY.md](SECURITY.md) for details.
 
 Do not use real customer records, credentials, or private inspection images in this public repository.
