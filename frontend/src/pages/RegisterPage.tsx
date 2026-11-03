@@ -16,7 +16,6 @@ export const RegisterPage: React.FC = () => {
         email: '',
         password: '',
         confirmPassword: '',
-        role: 'USER'
     });
     const [agreedToTerms, setAgreedToTerms] = useState(false);
     const [isTermsOpen, setIsTermsOpen] = useState(false);
@@ -49,7 +48,6 @@ export const RegisterPage: React.FC = () => {
                 username: formData.username,
                 email: formData.email,
                 password: formData.password,
-                role: formData.role
             });
 
             // On success, redirect to login
@@ -130,13 +128,6 @@ export const RegisterPage: React.FC = () => {
                         onChange={handleChange}
                     />
                 </div>
-
-                {/* 
-                  Defaulting to USER role. 
-                  Admin creation should typically be restricted, but for this demo, 
-                  User accounts are the standard Inspector equivalent.
-                */}
-                <input type="hidden" name="role" value="USER" />
 
                 <Checkbox
                     id="terms"
