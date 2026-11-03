@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ForgotPasswordDto, ResetPasswordDto } from './dto/password-recovery.dto';
 import { Public } from './auth.decorators';
@@ -11,6 +11,12 @@ export class AuthController {
   @Post('login')
   login(@Body('userId') userId: string, @Body('password') password?: string) {
     return this.authService.login(userId, password);
+  }
+
+  @Public(false)
+  @Post('logout')
+  logout(@Req() request: { user: { id: string } }) {
+    return this.authService.logout(request.user.id);
   }
 
   @Post('forgot-password')
