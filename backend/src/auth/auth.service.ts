@@ -35,7 +35,7 @@ export class AuthService {
 
     let accessToken: string;
     try {
-      accessToken = signAccessToken({ id: user.id, username: user.username, role: user.role });
+      accessToken = signAccessToken({ id: user.id, username: user.username, role: user.role, tokenVersion: user.tokenVersion });
     } catch {
       throw new ServiceUnavailableException('Authentication is not configured on this server');
     }
@@ -49,6 +49,10 @@ export class AuthService {
       name: user.name,
       role: user.role,
     };
+  }
+
+  async logout(userId: string) {
+    return this.usersService.invalidateTokens(userId);
   }
 
   async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
