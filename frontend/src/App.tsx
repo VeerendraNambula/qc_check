@@ -10,18 +10,15 @@ import { Layout } from './components/Layout';
 import { DashboardPage } from './pages/DashboardPage';
 import { TaskListPage } from './pages/TaskListPage';
 import { TaskDetailPage } from './pages/TaskDetailPage';
-import { useEffect } from 'react';
-import { setAuthToken } from './api';
+import { getAuthToken } from './api';
 
 const queryClient = new QueryClient();
 
 function ProtectedLayout() {
-  return localStorage.getItem('token') ? <Outlet /> : <Navigate to="/login" replace />;
+  return getAuthToken() ? <Outlet /> : <Navigate to="/login" replace />;
 }
 
 function App() {
-  useEffect(() => { setAuthToken(localStorage.getItem('token')); }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
@@ -30,7 +27,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
-          <Route path="/" element={<Navigate to={localStorage.getItem('token') ? '/dashboard' : '/login'} replace />} />
+          <Route path="/" element={<Navigate to={getAuthToken() ? '/dashboard' : '/login'} replace />} />
           <Route element={<ProtectedLayout />}>
             <Route element={<Layout />}>
               <Route path="dashboard" element={<DashboardPage />} />
