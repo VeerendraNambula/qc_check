@@ -27,7 +27,7 @@ describe('AuthService password recovery', () => {
 
     const updateData = usersService.update.mock.calls[0][1];
     const mail = transporter.sendMail.mock.calls[0][0];
-    const resetLink = mail.text.match(/https:\/\/app\.example\.com\/reset-password\?token=([^\\s]+)/)?.[0];
+    const resetLink = mail.text.match(/https:\/\/app\.example\.com\/reset-password\?token=([^ ]+)/)?.[0];
     expect(resetLink).toBeDefined();
 
     const rawToken = new URL(resetLink!).searchParams.get('token');
