@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
@@ -10,19 +10,17 @@ import { Layout } from './components/Layout';
 import { DashboardPage } from './pages/DashboardPage';
 import { TaskListPage } from './pages/TaskListPage';
 import { TaskDetailPage } from './pages/TaskDetailPage';
-
 import { useEffect } from 'react';
 import { setAuthToken } from './api';
 
 const queryClient = new QueryClient();
 
+function ProtectedLayout() {
+  return localStorage.getItem('token') ? <Outlet /> : <Navigate to="/login" replace />;
+}
+
 function App() {
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      setAuthToken(token);
-    }
-  }, []);
+  useEffect(() => { setAuthToken(localStorage.getItem('token')); }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -32,14 +30,15 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
-          <Route path="/" element={<Navigate to="/login" replace />} />
-
-          <Route element={<Layout />}>
-            <Route path="dashboard" element={<DashboardPage />} />
-            <Route path="tasks" element={<TaskListPage />} />
-            <Route path="tasks/:id" element={<TaskDetailPage />} />
-            <Route path="reports" element={<ReportsPage />} />
-            <Route path="profile" element={<ProfilePage />} />
+          <Route path="/" element={<Navigate to={localStorage.getItem('token') ? '/dashboard' : '/login'} replace />} />
+          <Route element={<ProtectedLayout />}>
+            <Route element={<Layout />}>
+              <Route path="dashboard" element={<DashboardPage />} />
+              <Route path="tasks" element={<TaskListPage />} />
+              <Route path="tasks/:id" element={<TaskDetailPage />} />
+              <Route path="reports" element={<ReportsPage />} />
+              <Route path="profile" element={<ProfilePage />} />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>
