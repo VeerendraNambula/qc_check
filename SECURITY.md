@@ -1,35 +1,33 @@
 # Security and deployment status
 
-This repository is a development/portfolio project and must not be treated as a production-ready application.
+This is a development/portfolio project, not a production-ready application. Use synthetic data only.
 
-## Known limitations identified during repository review
+## Implemented security controls
 
-- Login still returns a placeholder token, not a signed or verifiable session.
-- User and QC task controllers do not currently enforce authentication or role-based authorization guards.
-- The upload endpoint does not enforce an authenticated uploader or inspect file signatures; its MIME filter can be spoofed despite size and extension checks.
-- Password recovery requires a configured mail transport and still needs rate limiting and abuse monitoring.
-- CORS now uses an explicit `CORS_ORIGINS` allowlist; configure the production frontend origin in the deployment environment.
-- The application does not yet demonstrate a production security test suite.
+- Login requires a password and verifies bcrypt password hashes.
+- Login issues signed HS256 bearer tokens with a one-hour expiry. The signing key is supplied through `JWT_SECRET`; the API fails closed when it is missing or shorter than 32 bytes.
+- A global backend guard protects API routes. Only login, registration, password-recovery endpoints, and the health check are public.
+- Public registration always creates a `USER` account. The client cannot choose its role, and profile update DTOs do not expose role changes.
+- User administration is restricted to `ADMIN`; users can access and update only their own profile and change their own password after verifying the current password.
+- QC task administration is restricted to `ADMIN`. Inspectors can view unassigned tasks and their own assigned tasks, claim unassigned work, submit checklist responses for their own assignments, and update only the final status of their assigned tasks.
+- The frontend protects authenticated routes, clears local session data on logout, and clears expired sessions after a 401 response.
+- User/task responses select non-secret fields. Password-reset tokens are stored as SHA-256 hashes.
+- Uploads have a 5 MB limit, a JPEG/PNG/WebP MIME allowlist, random filenames, and file-signature checks.
+- CORS uses the explicit `CORS_ORIGINS` allowlist. SMTP credentials are read from environment variables.
 
-## Improvements made in this cleanup
+## Required deployment configuration
 
-- Removed committed database exports, login test payloads, user seed data, uploaded evidence images, and generated diagnostic/build logs from the current branch.
-- User and assigned-user API responses now explicitly select non-secret fields rather than returning password hashes or password-reset tokens.
-- Login now requires a password and only accepts bcrypt password hashes; the plaintext-password fallback was removed.
-- User/task responses avoid returning password hashes and reset tokens; DTO validation and a CORS origin allowlist are enabled.
-- Uploads have a 5 MB limit, an image MIME allowlist, and cryptographically random filenames.
-- Password-reset links are no longer printed to application logs, account-not-found responses are generic, and SMTP credentials must come from environment variables.
-- Docker startup no longer runs schema synchronization with `--accept-data-loss` or seeds accounts automatically.
-- Added ignore rules for local secrets, uploads, dumps, logs, and build artifacts.
+Set `JWT_SECRET` to a cryptographically random secret of at least 32 bytes in the backend deployment environment. Do not reuse the example value. Also configure `DATABASE_URL`, `CORS_ORIGINS`, and the SMTP/frontend recovery variables if password recovery is enabled. See `backend/.env.example` for the local template.
+
+## Remaining production work
+
+- Add rate limiting and abuse monitoring for login, registration, uploads, and password recovery.
+- Review refresh-token/session revocation strategy and key rotation. Current access tokens remain valid for up to one hour after issue.
+- Review upload storage, malware scanning, file serving, and retention policies before accepting real inspection evidence.
+- Add comprehensive authorization integration tests for every route and business rule.
+- Review dependency vulnerabilities and update the dependency tree deliberately.
+- Back up and review/baseline existing databases before applying Prisma migrations; never use `prisma db push --accept-data-loss` on data that must be retained.
 
 ## Safe handling
 
-- Never commit `.env` files, database exports, login payloads, reset tokens, user dumps, uploaded evidence, or generated logs.
-- Use synthetic data only in public demonstrations.
-- Store secrets in the deployment platform's secret manager.
-- Rotate credentials and invalidate reset tokens that were previously committed to a public repository.
-- Back up databases before applying schema changes.
-
-## Before production use
-
-Implement and test signed authentication, route guards and role-based authorization, rate limiting, stronger upload signature validation and storage controls, secure password recovery, and a reviewed migration/baselining process.
+Never commit real `.env` files, database exports, credentials, reset tokens, user dumps, uploaded evidence, or generated logs. Store production secrets in the deployment platform's secret manager and rotate any credential that has ever been exposed.
