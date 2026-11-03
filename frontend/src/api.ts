@@ -7,6 +7,11 @@ export const setAuthToken = (token: string | null) => {
     else delete api.defaults.headers.common['Authorization'];
 };
 
+// Restore the saved session before components can issue their first API requests.
+if (typeof window !== 'undefined') {
+    setAuthToken(window.localStorage.getItem('token'));
+}
+
 api.interceptors.response.use(
     response => response,
     error => {
