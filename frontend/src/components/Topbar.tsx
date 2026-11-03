@@ -33,8 +33,14 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
         return 'QC System';
     };
 
-    const handleLogout = () => {
-        // Clear local session data
+    const handleLogout = async () => {
+        // Revoke the server-side token before clearing the browser session.
+        try {
+            await api.post('/auth/logout');
+        } catch (error) {
+            console.error('Server-side logout failed; the access token will remain valid until it expires.', error);
+        }
+        // Clear local session data even if the server cannot be reached.
         localStorage.removeItem('token');
         localStorage.removeItem('userId');
         localStorage.removeItem('role');
