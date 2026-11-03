@@ -153,12 +153,14 @@ export const TaskListPage: React.FC = () => {
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <AssignTaskModal
-                isOpen={assignModal.isOpen}
-                onClose={closeAssignModal}
-                taskId={assignModal.taskId}
-                currentAssigneeId={assignModal.assigneeId}
-            />
+            {userRole === 'ADMIN' && (
+                <AssignTaskModal
+                    isOpen={assignModal.isOpen}
+                    onClose={closeAssignModal}
+                    taskId={assignModal.taskId}
+                    currentAssigneeId={assignModal.assigneeId}
+                />
+            )}
 
             {/* Page Header */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -166,20 +168,24 @@ export const TaskListPage: React.FC = () => {
                     <h1 className="text-3xl font-black text-qc-text-main tracking-tight">QC Tasks</h1>
                     <p className="text-sm font-bold text-qc-text-muted">Assigned and available quality checks across the floor.</p>
                 </div>
-                <Button
-                    variant="primary"
-                    icon={Plus}
-                    onClick={() => setIsCreateModalOpen(true)}
-                    className="md:px-8 shadow-qc-md ring-4 ring-qc-primary/10"
-                >
-                    Create New Task
-                </Button>
+                {userRole === 'ADMIN' && (
+                    <Button
+                        variant="primary"
+                        icon={Plus}
+                        onClick={() => setIsCreateModalOpen(true)}
+                        className="md:px-8 shadow-qc-md ring-4 ring-qc-primary/10"
+                    >
+                        Create New Task
+                    </Button>
+                )}
             </div>
 
-            <CreateTaskModal
-                isOpen={isCreateModalOpen}
-                onClose={() => setIsCreateModalOpen(false)}
-            />
+            {userRole === 'ADMIN' && (
+                <CreateTaskModal
+                    isOpen={isCreateModalOpen}
+                    onClose={() => setIsCreateModalOpen(false)}
+                />
+            )}
 
             {/* Filter Pane */}
             <section className="bg-white border border-qc-border rounded-qc-lg shadow-qc-sm overflow-hidden">
@@ -313,23 +319,27 @@ export const TaskListPage: React.FC = () => {
                                             </td>
                                             <td className="px-6 py-4 text-right">
                                                 <div className="flex items-center justify-end gap-2">
-                                                    <Button
-                                                        variant="secondary"
-                                                        size="sm"
-                                                        onClick={() => openAssignModal(task.id, task.assignedToId)}
-                                                    >
-                                                        {task.assignedToId ? 'Reassign' : 'Assign'}
-                                                    </Button>
+                                                    {userRole === 'ADMIN' && (
+                                                        <Button
+                                                            variant="secondary"
+                                                            size="sm"
+                                                            onClick={() => openAssignModal(task.id, task.assignedToId)}
+                                                        >
+                                                            {task.assignedToId ? 'Reassign' : 'Assign'}
+                                                        </Button>
+                                                    )}
                                                     <Link to={`/tasks/${task.id}`}>
                                                         <Button variant="primary" size="sm" icon={ChevronRight}>Open Task</Button>
                                                     </Link>
-                                                    <button
-                                                        onClick={() => handleDelete(task.id)}
-                                                        className="p-1.5 text-qc-text-muted hover:text-qc-error hover:bg-qc-error-light rounded transition-colors"
-                                                        title="Delete Task"
-                                                    >
-                                                        <Trash2 size={16} />
-                                                    </button>
+                                                    {userRole === 'ADMIN' && (
+                                                        <button
+                                                            onClick={() => handleDelete(task.id)}
+                                                            className="p-1.5 text-qc-text-muted hover:text-qc-error hover:bg-qc-error-light rounded transition-colors"
+                                                            title="Delete Task"
+                                                        >
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </td>
                                         </tr>
@@ -377,7 +387,7 @@ export const TaskListPage: React.FC = () => {
                                         </div>
 
                                         <div className="flex gap-2">
-                                            {!task.assignedToId && (
+                                            {userRole === 'ADMIN' && !task.assignedToId && (
                                                 <Button
                                                     variant="secondary"
                                                     size="sm"
