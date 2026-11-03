@@ -2,12 +2,16 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException, Forbi
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY, ROLES_KEY } from './auth.constants';
 import { verifyAccessToken } from './jwt.util';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-  constructor(private readonly reflector: Reflector) {}
+  constructor(
+    private readonly reflector: Reflector,
+    private readonly usersService: UsersService,
+  ) {}
 
-  canActivate(context: ExecutionContext): boolean {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [context.getHandler(), context.getClass()]);
     if (isPublic) return true;
 
@@ -18,6 +22,11 @@ export class JwtAuthGuard implements CanActivate {
       : '';
     const payload = token ? verifyAccessToken(token) : null;
     if (!payload) throw new UnauthorizedException('Authentication required or session expired');
+
+    const currentTokenVersion = await this.usersService.findTokenVersion(payload.sub);
+    if (currentTokenVersion === null || currentTokenVersion !== payload.tokenVersion) {
+      throw new UnauthorizedException('Session has been revoked; please log in again');
+    }
 
     request.user = { id: payload.sub, username: payload.username, role: payload.role };
     const requiredRoles = this.reflector.getAllAndOverride<string[]>(ROLES_KEY, [context.getHandler(), context.getClass()]);
