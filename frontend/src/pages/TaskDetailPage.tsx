@@ -33,6 +33,8 @@ export const TaskDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
+    const isAdmin = localStorage.getItem('role') === 'ADMIN';
+    const currentUserId = localStorage.getItem('userId');
 
     const [comments, setComments] = useState<Record<string, string>>({});
     const [uploadedImages, setUploadedImages] = useState<Record<string, string>>({});
@@ -189,14 +191,16 @@ export const TaskDetailPage: React.FC = () => {
                         >
                             Return to List
                         </Button>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            icon={Pencil}
-                            onClick={() => setIsEditTaskModalOpen(true)}
-                        >
-                            Edit Task
-                        </Button>
+                        {isAdmin && (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                icon={Pencil}
+                                onClick={() => setIsEditTaskModalOpen(true)}
+                            >
+                                Edit Task
+                            </Button>
+                        )}
                     </div>
                     <div className="space-y-2">
                         <div className="flex items-center gap-3">
@@ -213,10 +217,10 @@ export const TaskDetailPage: React.FC = () => {
                         <span className="text-[10px] font-black text-qc-text-muted uppercase tracking-widest">Inspector</span>
                         <div className="flex items-center gap-2">
                             <span className="text-xs font-bold text-qc-text-main">{task.assignedTo?.name || 'Unassigned'}</span>
-                            {(!task.assignedTo || task.assignedTo.id !== localStorage.getItem('userId')) && (
+                            {!isAdmin && !task.assignedTo && task.status === 'PENDING' && (
                                 <button
                                     onClick={() => {
-                                        const userId = localStorage.getItem('userId');
+                                        const userId = currentUserId;
                                         if (userId) {
                                             api.post(`/qc/tasks/${id}/claim`)
                                                 .then(() => queryClient.invalidateQueries({ queryKey: ['task', id] }));
@@ -256,7 +260,7 @@ export const TaskDetailPage: React.FC = () => {
                         <FileCheck2 size={24} className="text-qc-primary" />
                         Quality Checklist
                     </h2>
-                    {task.status !== 'COMPLETED' && (
+                    {isAdmin && task.status !== 'COMPLETED' && (
                         <Button
                             variant="secondary"
                             size="sm"
@@ -297,7 +301,7 @@ export const TaskDetailPage: React.FC = () => {
                                             {existingResponse ? (existingResponse.status === 'APPROVED' ? <CheckCircle2 size={16} /> : <XCircle size={16} />) : idx + 1}
                                         </div>
                                         <h3 className="font-black text-qc-text-main text-lg">{item.title}</h3>
-                                        {task?.status !== 'COMPLETED' && task?.status !== 'REJECTED' && (
+                                        {isAdmin && task?.status !== 'COMPLETED' && task?.status !== 'REJECTED' && (
                                             <button
                                                 onClick={(e) => {
                                                     e.stopPropagation();
@@ -488,7 +492,7 @@ export const TaskDetailPage: React.FC = () => {
                 placeholder="e.g. Check emergency exit..."
             />
 
-            {isEditTaskModalOpen && task && (
+            {isAdmin && isEditTaskModalOpen && task && (
                 <EditTaskModal
                     isOpen={isEditTaskModalOpen}
                     onClose={() => setIsEditTaskModalOpen(false)}
