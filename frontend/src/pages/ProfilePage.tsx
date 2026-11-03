@@ -17,6 +17,7 @@ export const ProfilePage: React.FC = () => {
     const [isEditingEmail, setIsEditingEmail] = useState(false);
 
     // Password State
+    const [currentPassword, setCurrentPassword] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isChangingPassword, setIsChangingPassword] = useState(false);
@@ -50,6 +51,7 @@ export const ProfilePage: React.FC = () => {
             setIsEditingName(false);
             setIsEditingEmail(false);
             setIsChangingPassword(false);
+            setCurrentPassword('');
             setPassword('');
             setConfirmPassword('');
         },
@@ -126,7 +128,7 @@ export const ProfilePage: React.FC = () => {
             toast.error("Password must be at least 6 characters");
             return;
         }
-        changePasswordMutation.mutate({ newPassword: password });
+        changePasswordMutation.mutate({ currentPassword, newPassword: password });
     };
 
     if (isLoading) return <div className="p-8 flex justify-center"><Loader2 className="animate-spin text-qc-primary" /></div>;
@@ -283,6 +285,13 @@ export const ProfilePage: React.FC = () => {
                                 <div className="grid gap-4">
                                     <Input
                                         type="password"
+                                        label="Current Password"
+                                        value={currentPassword}
+                                        onChange={(e) => setCurrentPassword(e.target.value)}
+                                        required
+                                    />
+                                    <Input
+                                        type="password"
                                         label="New Password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
@@ -305,6 +314,7 @@ export const ProfilePage: React.FC = () => {
                                         size="sm"
                                         onClick={() => {
                                             setIsChangingPassword(false);
+                                            setCurrentPassword('');
                                             setPassword('');
                                             setConfirmPassword('');
                                         }}
