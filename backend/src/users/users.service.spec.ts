@@ -21,3 +21,29 @@ describe('UsersService password reset token lookup', () => {
     });
   });
 });
+
+
+describe('UsersService registration privileges', () => {
+  it('always creates a USER account, ignoring any supplied role field', async () => {
+    const prisma = {
+      user: {
+        findUnique: jest.fn().mockResolvedValue(null),
+        create: jest.fn().mockImplementation(async ({ data }) => data),
+      },
+    };
+    const service = new UsersService(prisma as any);
+
+    await service.create({
+      name: 'New Inspector',
+      username: 'inspector1',
+      email: 'inspector@example.com',
+      password: 'StrongPassword123!',
+      role: 'ADMIN',
+    } as any);
+
+    expect(prisma.user.create).toHaveBeenCalledWith(expect.objectContaining({
+      data: expect.objectContaining({ role: 'USER' }),
+      select: expect.objectContaining({ id: true, role: true }),
+    }));
+  });
+});
