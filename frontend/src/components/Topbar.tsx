@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { api } from '../api';
+import { api, setAuthToken } from '../api';
 import { Bell, User, LogOut, ChevronDown, Menu } from 'lucide-react';
 import { clsx } from 'clsx';
 
@@ -35,10 +35,12 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
 
     const handleLogout = () => {
         // Clear local session data
-        localStorage.clear();
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('role');
         sessionStorage.clear();
-        // Redirect to login or home (since we don't have login, just redirect to tasks)
-        window.location.href = '/login';
+        setAuthToken(null);
+        navigate('/login', { replace: true });
     };
 
     return (
