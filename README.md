@@ -2,12 +2,36 @@
 
 A full-stack quality-inspection workflow application for creating QC tasks, assigning work, completing ordered checklists, and recording inspection evidence.
 
-## Stack
+## Highlights
 
-- **Frontend:** React 19, TypeScript, Vite, Tailwind CSS 4, TanStack Query
-- **Backend:** NestJS 11, TypeScript, REST API
-- **Data:** PostgreSQL and Prisma
-- **Build/deployment:** Docker multi-stage build, Render configuration
+- Create and manage quality-control tasks.
+- Assign inspection work and track task progress.
+- Complete ordered checklists and record inspection evidence.
+- Upload supporting files through the API.
+- Run the frontend and backend together in a containerized deployment.
+
+## Technology stack
+
+| Layer | Technologies |
+|---|---|
+| Frontend | React 19, TypeScript, Vite, Tailwind CSS 4, TanStack Query |
+| Backend | NestJS 11, TypeScript, REST API |
+| Data | PostgreSQL, Prisma |
+| Delivery | Docker multi-stage build, GitHub Actions |
+
+## Architecture
+
+```mermaid
+flowchart LR
+    U[User] --> FE[React + Vite frontend]
+    FE --> API[NestJS REST API]
+    API --> DB[(PostgreSQL)]
+    API --> ORM[Prisma]
+    API --> FS[Inspection evidence uploads]
+    ORM --> DB
+```
+
+The frontend communicates with the NestJS API. Prisma provides database access to PostgreSQL, while the upload module handles inspection evidence.
 
 ## Repository layout
 
@@ -15,6 +39,7 @@ A full-stack quality-inspection workflow application for creating QC tasks, assi
 qc_check/
 ├── backend/       # NestJS API, Prisma schema and migrations
 ├── frontend/      # React + Vite application
+├── .github/       # CI workflow
 ├── Dockerfile
 ├── SECURITY.md
 └── README.md
@@ -22,7 +47,9 @@ qc_check/
 
 ## Local development
 
-Create `backend/.env` from this example, replacing the local password:
+Requirements: Node.js (LTS), npm, and Docker with Docker Compose.
+
+Create `backend/.env` and replace the example password with a local value:
 
 ```dotenv
 POSTGRES_PASSWORD=choose-a-local-password
@@ -30,7 +57,7 @@ DATABASE_URL=postgresql://qc_user:choose-a-local-password@localhost:5432/qc_db?s
 CORS_ORIGINS=http://localhost:5173
 ```
 
-From the repository root, start PostgreSQL and the API:
+Start PostgreSQL and the API:
 
 ```bash
 cd backend
@@ -57,7 +84,7 @@ Vite normally serves the frontend at `http://localhost:5173`.
 
 Schema changes should be committed as Prisma migrations. Do not run `prisma db push --accept-data-loss` against a database with data that must be preserved.
 
-For an existing database that was created with `db push`, review and baseline the initial migration against a backup before running `prisma migrate deploy`. Do not assume an existing production database is ready for the migration history in this repository.
+For an existing database created with `db push`, back up the database and review/baseline the initial migration before running `prisma migrate deploy`. Do not assume an existing production database is ready for the migration history in this repository.
 
 ## API areas
 
@@ -69,4 +96,6 @@ For an existing database that was created with `db push`, review and baseline th
 
 ## Security status
 
-This is a portfolio/development project, **not production-ready**. Authentication tokens and route authorization still need implementation and security testing. See [SECURITY.md](SECURITY.md) for the current review and remaining work. Do not use real customer records, credentials, or private inspection images in this public repository.
+This is a portfolio/development project, **not production-ready**. Authentication tokens and route authorization still need implementation and security testing. Review [SECURITY.md](SECURITY.md) for the current security assessment and remaining work.
+
+Do not use real customer records, credentials, or private inspection images in this public repository.
