@@ -82,7 +82,7 @@ export class AuthService {
     const expiry = new Date(Date.now() + 60 * 60 * 1000);
 
     await this.usersService.update(user.id, {
-      resetToken: token,
+      resetToken: crypto.createHash('sha256').update(token).digest('hex'),
       resetTokenExpiry: expiry,
     } as any);
 
