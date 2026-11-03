@@ -4,6 +4,7 @@ export interface JwtPayload {
   sub: string;
   username: string;
   role: string;
+  tokenVersion: number;
   iat: number;
   exp: number;
 }
@@ -16,9 +17,19 @@ function getSecret(): string {
   return secret;
 }
 
-export function signAccessToken(user: { id: string; username: string; role: string }, now = Math.floor(Date.now() / 1000)): string {
+export function signAccessToken(
+  user: { id: string; username: string; role: string; tokenVersion?: number },
+  now = Math.floor(Date.now() / 1000),
+): string {
   const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
-  const payload: JwtPayload = { sub: user.id, username: user.username, role: user.role, iat: now, exp: now + 60 * 60 };
+  const payload: JwtPayload = {
+    sub: user.id,
+    username: user.username,
+    role: user.role,
+    tokenVersion: user.tokenVersion ?? 0,
+    iat: now,
+    exp: now + 60 * 60,
+  };
   const body = Buffer.from(JSON.stringify(payload)).toString('base64url');
   const unsigned = header + '.' + body;
   const signature = crypto.createHmac('sha256', getSecret()).update(unsigned).digest('base64url');
@@ -37,7 +48,15 @@ export function verifyAccessToken(token: string, now = Math.floor(Date.now() / 1
     const actual = Buffer.from(signaturePart, 'base64url');
     if (actual.length !== expected.length || !crypto.timingSafeEqual(actual, expected)) return null;
     const payload = JSON.parse(Buffer.from(payloadPart, 'base64url').toString('utf8')) as JwtPayload;
-    if (!payload.sub || !payload.username || !payload.role || !Number.isInteger(payload.exp) || payload.exp <= now) return null;
+    if (
+      !payload.sub ||
+      !payload.username ||
+      !payload.role ||
+      !Number.isInteger(payload.tokenVersion) ||
+      payload.tokenVersion < 0 ||
+      !Number.isInteger(payload.exp) ||
+      payload.exp <= now
+    ) return null;
     return payload;
   } catch {
     return null;
