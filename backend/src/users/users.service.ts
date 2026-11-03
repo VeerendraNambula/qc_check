@@ -9,6 +9,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 
 const safeUserSelect = {
   id: true,
@@ -112,7 +113,7 @@ export class UsersService {
   async findByResetToken(token: string) {
     return this.prisma.user.findFirst({
       where: {
-        resetToken: token,
+        resetToken: crypto.createHash('sha256').update(token).digest('hex'),
         resetTokenExpiry: { gt: new Date() },
       },
     });
