@@ -21,19 +21,22 @@ export const LoginPage: React.FC = () => {
         setIsLoading(true);
 
         try {
-            // Call login API
             const response = await api.post('/auth/login', { userId, password: password || undefined });
             const { access_token, userId: dbUserId } = response.data;
 
-            // Store token and user info
-            localStorage.setItem('token', access_token);
-            localStorage.setItem('userId', dbUserId);
-            localStorage.setItem('role', response.data.role);
+            // Keep the session only in this tab unless Remember Me is selected.
+            localStorage.removeItem('token');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('role');
+            sessionStorage.removeItem('token');
+            sessionStorage.removeItem('userId');
+            sessionStorage.removeItem('role');
+            const storage = rememberMe ? localStorage : sessionStorage;
+            storage.setItem('token', access_token);
+            storage.setItem('userId', dbUserId);
+            storage.setItem('role', response.data.role);
 
-            // Set header for future requests
             setAuthToken(access_token);
-
-            // Redirect to dashboard
             navigate('/dashboard');
         } catch (err: any) {
             console.error('Login failed', err);
@@ -65,7 +68,7 @@ export const LoginPage: React.FC = () => {
                         onChange={(e) => setUserId(e.target.value)}
                         placeholder="Enter your User ID"
                         icon={User}
-                        error={error ? ' ' : undefined} // Highlight input on error
+                        error={error ? ' ' : undefined}
                     />
 
                     <div className="space-y-1.5">
@@ -81,12 +84,6 @@ export const LoginPage: React.FC = () => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
-                        {/* 
-                            NOTE: The previous code only sent `userId`. 
-                            The user design *requires* a password field.
-                            I will add a dummy password state to satisfy the UI requirement.
-                        */}
-                        {/* Removing the above commented block in actual code */}
                     </div>
                 </div>
 
@@ -125,4 +122,3 @@ export const LoginPage: React.FC = () => {
         </AuthLayout>
     );
 };
-
