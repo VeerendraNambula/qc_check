@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
@@ -11,31 +11,20 @@ import { AuthModule } from './auth/auth.module';
 import { UploadModule } from './upload/upload.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { SpaFallbackFilter } from './spa-fallback.filter';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    ServeStaticModule.forRoot({
-      rootPath: join(process.cwd(), 'uploads'),
-      serveRoot: '/uploads',
-    }),
-    ServeStaticModule.forRoot({
-      rootPath: join(process.cwd(), '..', 'frontend', 'dist'),
-      exclude: ['/api/(.*)', '/uploads/(.*)'],
-    }),
-    PrismaModule,
-    UsersModule,
-    QcTasksModule,
-    AuthModule,
-    UploadModule,
+    ServeStaticModule.forRoot({ rootPath: join(process.cwd(), 'uploads'), serveRoot: '/uploads' }),
+    ServeStaticModule.forRoot({ rootPath: join(process.cwd(), '..', 'frontend', 'dist'), exclude: ['/api/(.*)', '/uploads/(.*)'] }),
+    PrismaModule, UsersModule, QcTasksModule, AuthModule, UploadModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    {
-      provide: APP_FILTER,
-      useClass: SpaFallbackFilter,
-    },
+    { provide: APP_FILTER, useClass: SpaFallbackFilter },
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
   ],
 })
-export class AppModule { }
+export class AppModule {}
