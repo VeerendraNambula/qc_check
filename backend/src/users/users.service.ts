@@ -24,6 +24,16 @@ export class UsersService {
   async findOneByUsername(username: string) { return this.prisma.user.findUnique({ where: { username } }); }
   async findOneByEmail(email: string) { return this.prisma.user.findUnique({ where: { email } }); }
 
+  async findTokenVersion(id: string) {
+    const user = await this.prisma.user.findUnique({ where: { id }, select: { tokenVersion: true } });
+    return user?.tokenVersion ?? null;
+  }
+
+  async invalidateTokens(id: string) {
+    await this.prisma.user.update({ where: { id }, data: { tokenVersion: { increment: 1 } } });
+    return { message: 'Logged out successfully' };
+  }
+
   async update(id: string, dto: UpdateUserDto) {
     const { name, username, email, profilePictureUrl, password } = dto;
     const data: Record<string, unknown> = { name, username, email, profilePictureUrl };
