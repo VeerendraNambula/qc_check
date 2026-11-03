@@ -218,7 +218,7 @@ export const TaskDetailPage: React.FC = () => {
                                     onClick={() => {
                                         const userId = localStorage.getItem('userId');
                                         if (userId) {
-                                            api.patch(`/qc/tasks/${id}`, { assignedToId: userId })
+                                            api.post(`/qc/tasks/${id}/claim`)
                                                 .then(() => queryClient.invalidateQueries({ queryKey: ['task', id] }));
                                         }
                                     }}
