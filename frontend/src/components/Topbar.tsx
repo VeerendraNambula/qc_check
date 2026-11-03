@@ -15,7 +15,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
     const notifications: any[] = []; // Empty notifications by default or mock some
-    const userId = localStorage.getItem('userId');
+    const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
 
     const { data: user } = useQuery({
         queryKey: ['user', userId],
@@ -38,7 +38,9 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
         localStorage.removeItem('token');
         localStorage.removeItem('userId');
         localStorage.removeItem('role');
-        sessionStorage.clear();
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('userId');
+        sessionStorage.removeItem('role');
         setAuthToken(null);
         navigate('/login', { replace: true });
     };
